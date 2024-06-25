@@ -12,9 +12,26 @@ public class Main {
 
         switch(result){
             case 4:
-                Object[] options1 = { "OK", "CANCEL" };
-                JOptionPane.showOptionDialog(null, "Click OK to continue", "Warning", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options1, options1);
+                Object[] options4 = { "OK", "CANCEL" };
+                int op4Int = JOptionPane.showOptionDialog(null, "Information On Climate Change", "Information On Climate Change", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options4, options4);
 
+                break;
+            case 3:
+                Object[] options3 = { "OK", "CANCEL" };
+                JOptionPane.showOptionDialog(null, "Test Yourself", "Test Yourself", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options3, options3);
+                break;
+            case 2:
+                Object[] options2 = { "OK", "CANCEL" };
+                JOptionPane.showOptionDialog(null, "Grades", "Grades", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options2, options2);
+                break;
+            case 1:
+                Object[] options1 = { "OK", "CANCEL" };
+                JOptionPane.showOptionDialog(null, "Log Out", "Log Out", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options1, options1);
+                break;
+            case 0:
+                Object[] options0 = { "OK", "CANCEL" };
+                JOptionPane.showOptionDialog(null, "Exit", "Exit", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options0, options0);
+                break;
         }
 
 
