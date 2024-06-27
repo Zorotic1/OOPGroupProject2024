@@ -1,16 +1,35 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 import javax.swing.*;
 
 public class Main {
+
+    public static String login() {
+
+        int ans = JOptionPane.showConfirmDialog(null, "Do you already have an Account?",
+                "Account Checking", JOptionPane.YES_NO_OPTION);
+
+        String uName;
+        String pass;
+        if (ans == JOptionPane.YES_OPTION) {
+            uName = JOptionPane.showInputDialog("Please enter your Username:");
+            pass = JOptionPane.showInputDialog("Please enter your Password:");
+            return pass;
+        }
+        else
+            uName = JOptionPane.showInputDialog("Please enter your Username:");
+            pass = JOptionPane.showInputDialog("Please enter your Password:");
+
+
+        return "error";
+    }
+
     public static int mainMenu() {
         String[] options = {"Exit", "Log Out", "Grades", "Test Yourself", "Information On Climate Change"};
         int result = JOptionPane.showOptionDialog(null, "Select an operation:", "Menu", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options);
-        System.out.println(result);
+
 
         return result;
     }
-    public static void infoMenu() {
+    public static int infoMenu() {
         Object[] options4 = { "NEXT PAGE", "PREVIOUS PAGE", "BACK TO MAIN MENU" };
 
         String info1 = ("<html><center>Climate change refers to long-term shifts in temperatures and weather patterns. Such shifts can be natural, due to changes in the sun’s activity or large volcanic eruptions.</center><br><br></html>" +
@@ -20,14 +39,26 @@ public class Main {
         "<html><center>Clearing land and cutting down forests can also release carbon dioxide. Agriculture, oil and gas operations are major sources of methane emissions.</center><br><br></html>" +
                 "<html><center>Energy, industry, transport, buildings, agriculture and land use are among the main sectors causing greenhouse gases.<br></html>");
 
+        String info2 = ("<html><center>Energy, industry, transport, buildings, agriculture and land use are among the main sectors causing greenhouse gases.<br></html>");
+
+
 
         int op4Int = JOptionPane.showOptionDialog(null, info1, "Information On Climate Change", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options4, options4);
 
+        while (op4Int != 3) {
             switch (op4Int) {
                 case 0:
-
+                    op4Int = JOptionPane.showOptionDialog(null, info1, "Information On Climate Change", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options4, options4);
+                    break;
+                case 1:
+                    op4Int = JOptionPane.showOptionDialog(null, info2, "Information On Climate Change", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options4, options4);
+                    break;
+                case 2:
+                    int result = mainMenu();
+                    return result;
             }
-
+        }
+        return 1;
     }
 
     public static void testMenu() {
@@ -48,32 +79,25 @@ public class Main {
 
     }
 
-    public static void exitMenu() {
-        Object[] options0 = { "OK", "CANCEL" };
-        JOptionPane.showOptionDialog(null, "Exit", "Exit", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options0, options0);
-
-    }
-
     public static void main(String[] args) {
         int result = mainMenu();
-
-        switch(result){
-            case 4:
-                infoMenu();
-                break;
-            case 3:
-               testMenu();
-                break;
-            case 2:
-               gradesMenu();
-                break;
-            case 1:
-                outMenu();
-                break;
-            case 0:
-                exitMenu();
-                break;
+        while (result != 0) {
+            switch(result){
+                case 4:
+                    result = infoMenu();
+                    break;
+                case 3:
+                    testMenu();
+                    break;
+                case 2:
+                    gradesMenu();
+                    break;
+                case 1:
+                    outMenu();
+                    break;
+            }
         }
+
 
 
     }
