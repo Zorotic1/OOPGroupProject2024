@@ -1,25 +1,42 @@
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class Main {
 
-    public static String login() {
 
-        int ans = JOptionPane.showConfirmDialog(null, "Do you already have an Account?",
-                "Account Checking", JOptionPane.YES_NO_OPTION);
+    public static String[] login() {
 
-        String uName;
+        ArrayList<String> uNameDB = new ArrayList<>();
+        ArrayList<String> adminUNameDB = new ArrayList<>();
+        ArrayList<String> passDB = new ArrayList<>();
+        ArrayList<String> adminPassDB = new ArrayList<>();
+
+        String name;
         String pass;
-        if (ans == JOptionPane.YES_OPTION) {
-            uName = JOptionPane.showInputDialog("Please enter your Username:");
-            pass = JOptionPane.showInputDialog("Please enter your Password:");
-            return pass;
-        }
-        else
-            uName = JOptionPane.showInputDialog("Please enter your Username:");
-            pass = JOptionPane.showInputDialog("Please enter your Password:");
+        String[] results = new String[2];
 
+         name = JOptionPane.showInputDialog("Please enter your Username:");
+            while (!(uNameDB.contains(name) || adminUNameDB.contains(name))){
+                name = JOptionPane.showInputDialog("Username does not exist, Please enter your Username:");
+            }
+            int nameIndex;
 
-        return "error";
+            if (uNameDB.contains((name))) {
+                nameIndex = uNameDB.indexOf(name);
+
+            }
+            else{
+                nameIndex = adminUNameDB.indexOf(name);
+            }
+
+            pass = JOptionPane.showInputDialog("Please enter your Password:");
+            while (!(Objects.equals(pass, passDB.get(nameIndex)) || Objects.equals(pass, adminPassDB.get(nameIndex)))){
+                pass = JOptionPane.showInputDialog("Incorrect Password, Please enter your Password:");
+            }
+
+        return results;
+
     }
 
     public static int mainMenu() {
@@ -80,6 +97,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        String[] login = login();
+
         int result = mainMenu();
         while (result != 0) {
             switch(result){
