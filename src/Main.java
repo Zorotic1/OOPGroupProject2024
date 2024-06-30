@@ -1,6 +1,11 @@
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.Arrays;
+
+import static java.sql.Types.NULL;
+
 
 public class Main {
 
@@ -11,15 +16,19 @@ public class Main {
         ArrayList<String> adminUNameDB = new ArrayList<>();
         ArrayList<String> passDB = new ArrayList<>();
         ArrayList<String> adminPassDB = new ArrayList<>();
+        uNameDB.add("test");
+        passDB.add("1234");
+        adminUNameDB.add("testadmin");
+        adminPassDB.add("1234");
 
         String name;
         String pass;
         String[] results = new String[2];
 
          name = JOptionPane.showInputDialog("Please enter your Username:");
-            while (!(uNameDB.contains(name) || adminUNameDB.contains(name))){
-                name = JOptionPane.showInputDialog("Username does not exist, Please enter your Username:");
-            }
+        while (!(uNameDB.contains(name) || adminUNameDB.contains(name))){
+            name = JOptionPane.showInputDialog("Username does not exist, Please enter your Username:");
+        }
             int nameIndex;
 
             if (uNameDB.contains((name))) {
@@ -79,8 +88,26 @@ public class Main {
     }
 
     public static void testMenu() {
-        Object[] options3 = { "OK", "CANCEL" };
-        JOptionPane.showOptionDialog(null, "Test Yourself", "Test Yourself", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options3, options3);
+
+        String [] questions = new String[3];
+        questions[0] = JOptionPane.showInputDialog("Fill in the blank: A car produce ____ amount of CO2 on average per year.");
+        questions[1] = JOptionPane.showInputDialog("Fill in the blank: The best way to reduce waste is to _____.");
+        questions[2] = JOptionPane.showInputDialog("Fill in the blank: The 3R is Recycle, Reduce and _______.");
+
+        int randInt;
+        int [] numbers = new int[3];
+        String[] ans = new String[3];
+        boolean contains;
+
+       for(int i = 0; i < 4; i++) {
+           do {
+               randInt = ThreadLocalRandom.current().nextInt(4);
+               contains = Arrays.binarySearch(numbers, randInt) >= 0;
+           } while (contains);
+
+           ans[i] = questions[randInt];
+           numbers[i] = randInt;
+       }
 
     }
 
