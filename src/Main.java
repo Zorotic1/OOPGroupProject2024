@@ -2,13 +2,20 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.Collections;
 import java.util.Arrays;
-
 
 public class Main {
 
     private static ArrayList<User> users = new ArrayList<>(); // Added
     private static User currentUser; // Added
+    private static testManager testManager = new testManager();
+
+    public static void populateTestQuestions() {
+        testManager.addQuestion("Fill in the blank: Energy, industry, transport, buildings, _________, and land use are among the main sectors causing greenhouse gases.", "agriculture");
+        testManager.addQuestion("Fill in the blank: The main greenhouse gases that are causing climate change include carbon dioxide and methane. These come from using gasoline for driving a car or _______ for heating a building", "coal");
+        testManager.addQuestion("Fill in the blank: Changes in Weather Patterns: More frequent and severe weather events, such as hurricanes, heatwaves, _______, and heavy rainfall.","droughts");
+    }
 
     public static void populateUsers() { // Added
         users.add(new User("test", "1234", false));
@@ -62,7 +69,7 @@ public class Main {
                 "<html><div style='width: 1000px;'>1. Climate change refers to long-term shifts in temperatures and weather patterns. Such shifts can be natural, due to changes in the sun’s activity or large volcanic eruptions.<br><br>"
                         + "2. But since the 1800s, human activities have been the main driver of climate change, primarily due to the burning of fossil fuels like coal, oil, and gas.</div></html>",
                 "<html><div style='width: 1000px;'>3. Burning fossil fuels generates greenhouse gas emissions that act like a blanket wrapped around the Earth, trapping the sun’s heat and raising temperatures.<br><br>"
-                        + "4. The main greenhouse gases that are causing climate change include carbon dioxide and methane. These come from using gasoline for driving a car or coal for heating a building, for example.</div></html>",
+                        + "4. The main greenhouse gases that are causing climate change include carbon dioxide and methane. These come from using gasoline for driving a car or coal for heating a building.</div></html>",
                 "<html><div style='width: 1000px;'>5. Clearing land and cutting down forests can also release carbon dioxide. Agriculture, oil, and gas operations are major sources of methane emissions.<br><br>"
                         + "6. Energy, industry, transport, buildings, agriculture, and land use are among the main sectors causing greenhouse gases.</div></html>"
         };
@@ -98,14 +105,21 @@ public class Main {
     }
 
     public static void testMenu() {
-        String[] questions = new String[3];
-        questions[0] = JOptionPane.showInputDialog("Fill in the blank: A car produces ____ amount of CO2 on average per year.");
-        questions[1] = JOptionPane.showInputDialog("Fill in the blank: The best way to reduce waste is to _____.");
-        questions[2] = JOptionPane.showInputDialog("Fill in the blank: The 3R is Recycle, Reduce and _______.");
+
+        ArrayList<String> questions = new ArrayList<>();
+        questions.add(JOptionPane.showInputDialog("Fill in the blank: Energy, industry, transport, buildings, _________, and land use are among the main sectors causing greenhouse gases."));
+        questions.add(JOptionPane.showInputDialog("Fill in the blank: The main greenhouse gases that are causing climate change include carbon dioxide and methane. These come from using gasoline for driving a car or _______ for heating a building"));
+        questions.add(JOptionPane.showInputDialog("Fill in the blank: Changes in Weather Patterns: More frequent and severe weather events, such as hurricanes, heatwaves, _______, and heavy rainfall."));
+        ArrayList<String> answers = new ArrayList<>();
+        answers.add("agriculture");
+        answers.add("coal");
+        answers.add("droughts");
+
+        int l = questions.size();
 
         int randInt;
-        int[] numbers = new int[3];
-        String[] ans = new String[3];
+        int[] numbers = new int[l];
+        String[] ans = new String[l];
         boolean contains;
 
         for (int i = 0; i < 3; i++) {
@@ -114,8 +128,11 @@ public class Main {
                 contains = Arrays.binarySearch(numbers, randInt) >= 0;
             } while (contains);
 
-            ans[i] = questions[randInt];
+            ans[i] = questions.get(randInt);
             numbers[i] = randInt;
+            if (ans[i] != "agriculture"){
+
+            }
         }
     }
 
@@ -182,26 +199,3 @@ public class Main {
     }
 }
 
-class User { // Added
-    private String username;
-    private String password;
-    private boolean isAdmin;
-
-    public User(String username, String password, boolean isAdmin) {
-        this.username = username;
-        this.password = password;
-        this.isAdmin = isAdmin;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
-    }
-
-    public boolean isAdmin() {
-        return isAdmin;
-    }
-}
