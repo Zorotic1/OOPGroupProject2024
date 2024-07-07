@@ -165,9 +165,9 @@ public class Main {
     }
 
     public static User getUserByUsername(String username) { // Added
-        for (User user : users) {
-            if (user.getUsername().equals(username)) {
-                return user;
+        for (User i : users) {
+            if (i.getUsername().equals(username)) {
+                return i;
             }
         }
         return null;
