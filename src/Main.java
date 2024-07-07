@@ -105,35 +105,11 @@ public class Main {
     }
 
     public static void testMenu() {
+        populateTestQuestions();
+        testManager.startTest();
 
-        ArrayList<String> questions = new ArrayList<>();
-        questions.add(JOptionPane.showInputDialog("Fill in the blank: Energy, industry, transport, buildings, _________, and land use are among the main sectors causing greenhouse gases."));
-        questions.add(JOptionPane.showInputDialog("Fill in the blank: The main greenhouse gases that are causing climate change include carbon dioxide and methane. These come from using gasoline for driving a car or _______ for heating a building"));
-        questions.add(JOptionPane.showInputDialog("Fill in the blank: Changes in Weather Patterns: More frequent and severe weather events, such as hurricanes, heatwaves, _______, and heavy rainfall."));
-        ArrayList<String> answers = new ArrayList<>();
-        answers.add("agriculture");
-        answers.add("coal");
-        answers.add("droughts");
 
-        int l = questions.size();
 
-        int randInt;
-        int[] numbers = new int[l];
-        String[] ans = new String[l];
-        boolean contains;
-
-        for (int i = 0; i < 3; i++) {
-            do {
-                randInt = ThreadLocalRandom.current().nextInt(3);
-                contains = Arrays.binarySearch(numbers, randInt) >= 0;
-            } while (contains);
-
-            ans[i] = questions.get(randInt);
-            numbers[i] = randInt;
-            if (ans[i] != "agriculture"){
-
-            }
-        }
     }
 
     public static void gradesMenu() {
@@ -149,7 +125,6 @@ public class Main {
     public static void main(String[] args) {
         String[] login = login();
         currentUser = getUserByUsername(login[0]); // Added
-
         int result = mainMenu();
         while (result != 0) {
             switch (result) {

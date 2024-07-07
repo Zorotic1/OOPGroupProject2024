@@ -12,9 +12,30 @@ public class testManager {
     }
 
     public void addQuestion(String question, String answer) {
-        questions.add(JOptionPane.showInputDialog(question));
-        answers.add(answer);
+
+        boolean found = false;
+        if (!questions.isEmpty()){
+            for (String i : questions){
+                if(question.equalsIgnoreCase(i)){
+                    found = true;
+                    System.out.println(found);
+                    break;
+                }
+            }
+            if(!found) {
+                System.out.println(question);
+                questions.add(question);
+                answers.add(answer);
+            }
+        }
+        else{
+            System.out.println(question);
+            questions.add(question);
+            answers.add(answer);
+        }
+
     }
+
 
     public void startTest() {
         ArrayList<Integer> indices = new ArrayList<>();
@@ -29,10 +50,12 @@ public class testManager {
                 JOptionPane.showMessageDialog(null,"Correct!");
             }
             else {
-                JOptionPane.showMessageDialog(null, "Incorrect. The correct answer is:" + answers.get(i));
+                JOptionPane.showMessageDialog(null, "Incorrect. The correct answer is: " + answers.get(i));
             }
         }
     }
+
+
 
 
 }
