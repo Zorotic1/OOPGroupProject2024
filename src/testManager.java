@@ -5,10 +5,12 @@ import java.util.Collections;
 public class testManager {
     private ArrayList<String> questions;
     private ArrayList<String> answers;
+    private int correctAnswers;
 
     public testManager() {
         questions = new ArrayList<>();
         answers = new ArrayList<>();
+        correctAnswers = 0;
     }
 
     public void addQuestion(String question, String answer) {
@@ -38,6 +40,7 @@ public class testManager {
 
 
     public void startTest() {
+        correctAnswers = 0;
         ArrayList<Integer> indices = new ArrayList<>();
         for (int i = 0; i < questions.size(); i++) {
             indices.add(i);
@@ -47,6 +50,7 @@ public class testManager {
         for (int i : indices) {
             String userAnswer = JOptionPane.showInputDialog(questions.get(i));
             if (userAnswer != null && userAnswer.equalsIgnoreCase(answers.get(i))) {
+                correctAnswers++;
                 JOptionPane.showMessageDialog(null,"Correct!");
             }
             else {
@@ -55,7 +59,7 @@ public class testManager {
         }
     }
 
-
-
-
+    public String getGrades() { // Added
+        return correctAnswers + " out of " + questions.size() + " correct.";
+    }
 }
