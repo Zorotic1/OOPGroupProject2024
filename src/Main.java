@@ -1,8 +1,5 @@
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.Collections;
 import java.util.Arrays;
 
 public class Main {
@@ -38,24 +35,49 @@ public class Main {
     }
 
     public static String[] login() {
-        populateUsers(); // Added
+        populateUsers();
 
-        String name;
-        String pass;
         String[] results = new String[2];
 
-        name = JOptionPane.showInputDialog("Please enter your Username:");
-        User user = getUserByUsername(name);
+        User user;
+        do {
+            String name = JOptionPane.showInputDialog("Please enter your Username:");
+            if (name == null) {
+                int quit = JOptionPane.showConfirmDialog(null, "Warning: Are you sure you want to quit?", "Warning", JOptionPane.YES_NO_OPTION);
+                if (quit == JOptionPane.YES_OPTION) {
+                    System.exit(0);
+                }
+            }
+            else {
+                user = getUserByUsername(name);
+                if (user == null) {
+                    JOptionPane.showMessageDialog(null, "Username does not exist. Please enter a valid username.");
+                }
+                else {
+                    break;
+                }
+            }
+        } while (true);
 
-        while (user == null) {
-            name = JOptionPane.showInputDialog("Username does not exist, Please enter your Username:");
-            user = getUserByUsername(name);
-        }
-
-        pass = JOptionPane.showInputDialog("Please enter your Password:");
-        while (!user.checkPassword(pass)) {
-            pass = JOptionPane.showInputDialog("Incorrect Password, Please enter your Password:");
-        }
+        String pass;
+        do {
+            pass = JOptionPane.showInputDialog("Please enter your Password:");
+            if (pass == null) {
+                int quit = JOptionPane.showConfirmDialog(null, "Warning: Are you sure you want to quit?", "Warning", JOptionPane.YES_NO_OPTION);
+                if (quit == JOptionPane.YES_OPTION) {
+                    System.exit(0);
+                }
+            }
+            else if (pass.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Password cannot be empty.");
+            }
+            else if (!user.checkPassword(pass)) {
+                JOptionPane.showMessageDialog(null, "Incorrect Password. Please enter the correct password.");
+            }
+            else {
+                break;
+            }
+        } while (true);
 
         results[0] = user.getUsername();
         results[1] = pass;
@@ -64,8 +86,8 @@ public class Main {
     }
 
     public static int mainMenu() {
-        String[] options = currentUser.isAdmin() ? new String[]{"Exit", "Log Out", "Grades", "Test Yourself", "Information On Climate Change", "Manage Information"} :
-                new String[]{"Exit", "Log Out", "Grades", "Test Yourself", "Information On Climate Change"};
+        String[] options = currentUser.isAdmin() ? new String[]{ "Log Out", "Grades", "Test Yourself", "Information On Climate Change", "Manage Information"} :
+                new String[]{ "Log Out", "Grades", "Test Yourself", "Information On Climate Change"};
         int result = JOptionPane.showOptionDialog(null, "Select an operation:", "Menu", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options);
 
         return result;
@@ -74,22 +96,28 @@ public class Main {
     public static int infoMenu() {
         Object[] options4 = {"NEXT PAGE", "PREVIOUS PAGE", "BACK TO MAIN MENU"};
 
-
-
         int currentPage = 0;
-        int result = 0;
+        int result;
 
-        while (result != 2) {
+        do {
             result = JOptionPane.showOptionDialog(null, infoPages.get(currentPage), "Information On Climate Change", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options4, options4[0]);
 
             if (result == 0 && currentPage < infoPages.size() - 1) {
                 currentPage++;
-            } else if (result == 1 && currentPage > 0) {
+            }
+            else if (result == 1 && currentPage > 0) {
                 currentPage--;
-            } else if (result == 2) {
+            }
+            else if (result == 2) {
                 return 0;
             }
-        }
+            else if (result == JOptionPane.CLOSED_OPTION) {
+                int quit = JOptionPane.showConfirmDialog(null, "Warning: Are you sure you want to go back to the main menu?", "Warning", JOptionPane.YES_NO_OPTION);
+                if (quit == JOptionPane.YES_OPTION) {
+                    return 1;
+                }
+            }
+        } while (result != JOptionPane.CLOSED_OPTION);
 
         return 0;
     }
@@ -128,8 +156,13 @@ public class Main {
 
     public static void testMenu() {
         populateTestQuestions();
-        testManager.startTest();
-        JOptionPane.showMessageDialog(null, testManager.getGrades(), "Test Results", JOptionPane.INFORMATION_MESSAGE);
+        int c = testManager.startTest();
+        if (c == 1){
+            mainMenuLoop();
+        }
+        else{
+            JOptionPane.showMessageDialog(null, testManager.getGrades(), "Test Results", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
     public static void gradesMenu() {
@@ -137,51 +170,64 @@ public class Main {
         JOptionPane.showOptionDialog(null, testManager.getGrades(), "Grades", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options2, options2[0]);
     }
 
-    public static void outMenu() {
-        Object[] options1 = {"OK", "CANCEL"};
-        JOptionPane.showOptionDialog(null, "Log Out", "Log Out", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options1, options1);
+    public static void logoutMenu() {
+        int quit = JOptionPane.showConfirmDialog(null, "Warning: Are you sure you want to log out?", "Warning", JOptionPane.YES_NO_OPTION);
+        if (quit == JOptionPane.YES_OPTION) {
+            String[] login = login();
+            currentUser = getUserByUsername(login[0]);
+        }
     }
 
-    public static void main(String[] args) {
-        String[] login = login();
-        currentUser = getUserByUsername(login[0]); // Added
+    public static void mainMenuLoop() {
         int result = mainMenu();
-        while (result != 0) {
+        while (result != -35) {
             switch (result) {
-                case 4:
-                    result = infoMenu();
-                    break;
                 case 3:
-                    testMenu();
+                    infoMenu();
                     break;
                 case 2:
-                    gradesMenu();
+                    testMenu();
                     break;
                 case 1:
-                    outMenu();
+                    gradesMenu();
                     break;
-                case 5: // Added
-                    if (currentUser.isAdmin()) { // Added
-                        int manageResult = manageInfoMenu(); // Added
-                        while (manageResult != 3) { // Added
-                            switch (manageResult) { // Added
+                case 0:
+                    logoutMenu();
+                    break;
+                case 4:
+                    if (currentUser.isAdmin()) {
+                        int manageResult = manageInfoMenu();
+                        while (manageResult != 3) {
+                            switch (manageResult) {
                                 case 0:
-                                    addInfo(); // Added
+                                    addInfo();
                                     break;
                                 case 1:
-                                    editInfo(); // Added
+                                    editInfo();
                                     break;
                                 case 2:
-                                    deleteInfo(); //Added
+                                    deleteInfo();
                                     break;
                             }
                             manageResult = manageInfoMenu();
                         }
                     }
                     break;
+                case -1:
+                    int quit = JOptionPane.showConfirmDialog(null, "Warning: Are you sure you want to close?", "Warning", JOptionPane.YES_NO_OPTION);
+                    if (quit == JOptionPane.YES_OPTION) {
+                        System.exit(0);
+                    }
+                    break;
             }
             result = mainMenu();
         }
+    }
+
+    public static void main(String[] args) {
+        String[] login = login();
+        currentUser = getUserByUsername(login[0]); // Added
+        mainMenuLoop();
     }
 
     public static User getUserByUsername(String username) { // Added

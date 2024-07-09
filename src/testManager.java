@@ -20,18 +20,15 @@ public class testManager {
             for (String i : questions){
                 if(question.equalsIgnoreCase(i)){
                     found = true;
-                    System.out.println(found);
                     break;
                 }
             }
             if(!found) {
-                System.out.println(question);
                 questions.add(question);
                 answers.add(answer);
             }
         }
         else{
-            System.out.println(question);
             questions.add(question);
             answers.add(answer);
         }
@@ -39,7 +36,7 @@ public class testManager {
     }
 
 
-    public void startTest() {
+    public int startTest() {
         correctAnswers = 0;
         ArrayList<Integer> indices = new ArrayList<>();
         for (int i = 0; i < questions.size(); i++) {
@@ -48,15 +45,27 @@ public class testManager {
         Collections.shuffle(indices);
 
         for (int i : indices) {
-            String userAnswer = JOptionPane.showInputDialog(questions.get(i));
-            if (userAnswer != null && userAnswer.equalsIgnoreCase(answers.get(i))) {
+            String userAnswer;
+            do {
+                userAnswer = JOptionPane.showInputDialog(questions.get(i));
+                if (userAnswer == null) {
+                    int quit = JOptionPane.showConfirmDialog(null, "Warning: Are you sure you want to go back to the main menu?", "Warning", JOptionPane.YES_NO_OPTION);
+                    if (quit == JOptionPane.YES_OPTION) {
+                        return 1;
+                    }
+                    break;
+                }
+            } while (userAnswer.isEmpty());
+
+            if (userAnswer.equalsIgnoreCase(answers.get(i))) {
                 correctAnswers++;
-                JOptionPane.showMessageDialog(null,"Correct!");
+                JOptionPane.showMessageDialog(null, "Correct!");
             }
             else {
                 JOptionPane.showMessageDialog(null, "Incorrect. The correct answer is: " + answers.get(i));
             }
         }
+        return 0;
     }
 
     public String getGrades() { // Added
