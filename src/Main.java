@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -135,12 +136,12 @@ public class Main {
         JOptionPane.showMessageDialog(null, "Information added: " + info);
     }
 
-    public static void editInfo() { // Added
+    public static void editInfo() {
         String[] infoArray = infoPages.toArray(new String[0]);
         int index = JOptionPane.showOptionDialog(null, "Select information to edit:", "Edit Information", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, infoArray, infoArray[0]);
         if (index >= 0 && index < infoPages.size()) {
             String newInfo = JOptionPane.showInputDialog("Edit the information:", infoPages.get(index).replaceAll("<[^>]*>", ""));
-            infoPages.set(index, "<html><div style='width: 1000px;'>" + newInfo + "</div></html>");
+            infoPages.set(index, "<html><div style='width: 500px;'>" + newInfo + "</div></html>");
             JOptionPane.showMessageDialog(null, "Information edited.");
         }
     }
@@ -208,6 +209,14 @@ public class Main {
                                 case 2:
                                     deleteInfo();
                                     break;
+                                case (JOptionPane.CLOSED_OPTION):
+                                    int quit = JOptionPane.showConfirmDialog(null, "Warning: Are you sure you want to go back to the main menu?", "Warning", JOptionPane.YES_NO_OPTION);
+                                    if (quit == JOptionPane.YES_OPTION) {
+                                        mainMenuLoop();
+                                        break;
+                                    }
+                                    break;
+
                             }
                             manageResult = manageInfoMenu();
                         }
