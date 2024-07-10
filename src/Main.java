@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -7,6 +6,7 @@ public class Main {
 
     private static ArrayList<User> users = new ArrayList<>(); // Added
     private static User currentUser; // Added
+    private static User user;
     private static testManager testManager = new testManager();
     private static ArrayList<String> infoPages = new ArrayList<>(Arrays.asList(
             "<html><div style='width: 1000px;'>Climate change refers to significant and lasting changes in the Earth’s climate and weather patterns. These changes can be natural, but in the context of recent discussions, the term often refers to changes driven by human activities, particularly the increase in greenhouse gases (like carbon dioxide and methane) due to burning fossil fuels, deforestation, and other industrial processes. Key aspects of climate change include:<br><br>"
@@ -30,7 +30,7 @@ public class Main {
         testManager.addQuestion("Fill in the blank: Changes in Weather Patterns: More frequent and severe weather events, such as hurricanes, heatwaves, _______, and heavy rainfall.","droughts");
         testManager.addQuestion("Fill in the blank: To enhance students' understanding and ability to respond to climate change, we can introduce courses on _________ and environmental protection in schools and higher education institutions.","International conferences");
         testManager.addQuestion("Fill in the blank: To raise public awareness of environmental issues, we can use_______, community activities, and social networks to widely disseminate information on the impacts and measures of climate change","Climate change");
-        testManager.addQuestion("Fill in the blanks: Internaltional cooperation and experience sharing are crucial for improving global capacity to respond to climate change. We can achieve this by participating in _______, collaborative projects, and bilateral exchanges.","Media");
+        testManager.addQuestion("Fill in the blanks: International cooperation and experience sharing are crucial for improving global capacity to respond to climate change. We can achieve this by participating in _______, collaborative projects, and bilateral exchanges.","Media");
     }
 
     public static void populateUsers() { // Added
@@ -88,10 +88,54 @@ public class Main {
 
         return results;
     }
+    public static void addNewUser() {
+        User user;
+        String name;
+        do {
+            name = JOptionPane.showInputDialog("Please enter your Username:");
+            if (name == null) {
+                int quit = JOptionPane.showConfirmDialog(null, "Warning: Are you sure you want to return to main menu?", "Warning", JOptionPane.YES_NO_OPTION);
+                if (quit == JOptionPane.YES_OPTION) {
+                    return;
+                }
+            } else {
+                user = getUserByUsername(name);
+                if (name == null) {
+                    JOptionPane.showMessageDialog(null, "Field cannot be empty. Please enter a valid username.");
+                }
+                if (user != null) {
+                    JOptionPane.showMessageDialog(null, "Username already exists. Please enter a valid username.");
+                } else {
+                    break;
+                }
+            }
+        } while (true);
+
+        String pass;
+        do {
+            pass = JOptionPane.showInputDialog("Please enter your Password:");
+            if (pass == null) {
+                int quit = JOptionPane.showConfirmDialog(null, "Warning: Are you sure you want to quit?", "Warning", JOptionPane.YES_NO_OPTION);
+                if (quit == JOptionPane.YES_OPTION) {
+                    System.exit(0);
+                }
+            } else if (pass.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Password cannot be empty.");
+            } else {
+                break;
+            }
+        } while (true);
+
+        int isAdminOption = JOptionPane.showConfirmDialog(null, "Is this user an admin?", "Admin User", JOptionPane.YES_NO_OPTION);
+        boolean isAdmin = (isAdminOption == JOptionPane.YES_OPTION);
+
+
+        users.add(new User(name, pass, isAdmin));
+    }
 
     public static int mainMenu() {
-        String[] options = currentUser.isAdmin() ? new String[]{ "Log Out", "Grades", "Test Yourself", "Information On Climate Change", "Manage Information"} :
-                new String[]{ "Log Out", "Grades", "Test Yourself", "Information On Climate Change"};
+        String[] options = currentUser.isAdmin() ? new String[]{ "Log Out", "Grades", "Test Yourself", "Information On Climate Change","Discussion Board","Workshop/Talk Schedule","Manage Information", "Add New User"} :
+                new String[]{ "Log Out", "Grades", "Test Yourself", "Information On Climate Change", "Discussion Board","Workshop/Talk Schedule"};
         int result = JOptionPane.showOptionDialog(null, "Select an operation:", "Menu", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options);
 
         return result;
@@ -133,31 +177,66 @@ public class Main {
         return result;
     }
 
-    public static void addInfo() { // Added
-        String info = JOptionPane.showInputDialog("Enter new information:");
+    public static void addInfo() {
+        String info;
+        do {
+            info = JOptionPane.showInputDialog("Enter new information:");
+            if (info == null) {
+                int quit = JOptionPane.showConfirmDialog(null, "Warning: Are you sure you want to go back?", "Warning", JOptionPane.YES_NO_OPTION);
+                if (quit == JOptionPane.YES_OPTION) {
+                    return;
+                }
+            }
+        } while (info == null);
+
+        while (info.isEmpty()) {
+            info = JOptionPane.showInputDialog("Info cannot be empty. Enter new information:");
+        }
+
         infoPages.add("<html><div style='width: 1000px;'>" + info + "</div></html>");
         JOptionPane.showMessageDialog(null, "Information added: " + info);
     }
 
     public static void editInfo() {
         String[] infoArray = infoPages.toArray(new String[0]);
-        int index = JOptionPane.showOptionDialog(null, "Select information to edit:", "Edit Information", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, infoArray, infoArray[0]);
+
+        Object[] options = new Object[infoArray.length];
+        for (int i = 0; i < infoArray.length; i++) {
+            String buttonText = infoArray[i].replaceAll("<[^>]*>", "");
+            if (buttonText.length() > 50) {
+                buttonText = buttonText.substring(0, 50) + "...";
+            }
+            options[i] = buttonText;
+        }
+
+        int index = JOptionPane.showOptionDialog(null, "Select information to edit:", "Edit Information", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+
         if (index >= 0 && index < infoPages.size()) {
             String newInfo = JOptionPane.showInputDialog("Edit the information:", infoPages.get(index).replaceAll("<[^>]*>", ""));
-            infoPages.set(index, "<html><div style='width: 500px;'>" + newInfo + "</div></html>");
-            JOptionPane.showMessageDialog(null, "Information edited.");
+
+            if (newInfo != null) {
+                infoPages.set(index, "<html><div style='width: 5000px;'>" + newInfo + "</div></html>");
+                JOptionPane.showMessageDialog(null, "Information edited.");
+            }
         }
     }
 
-    public static void deleteInfo() { // Added
-        String[] infoArray = infoPages.toArray(new String[0]);
+    public static void deleteInfo() {
+        String[] infoArray = new String[infoPages.size()];
+        for (int i = 0; i < infoPages.size(); i++) {
+            String info = infoPages.get(i);
+            String buttonText = info.replaceAll("<[^>]*>", "");
+            if (buttonText.length() > 50) {
+                buttonText = buttonText.substring(0, 50) + "...";
+            }
+            infoArray[i] = buttonText;
+        }
         int index = JOptionPane.showOptionDialog(null, "Select information to delete:", "Delete Information", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, infoArray, infoArray[0]);
         if (index >= 0 && index < infoPages.size()) {
             infoPages.remove(index);
             JOptionPane.showMessageDialog(null, "Information deleted.");
         }
     }
-
     public static void testMenu() {
         populateTestQuestions();
         int c = testManager.startTest();
@@ -165,13 +244,12 @@ public class Main {
             mainMenuLoop();
         }
         else{
-            JOptionPane.showMessageDialog(null, testManager.getGrades(), "Test Results", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, testManager.getGradesInfo(), "Test Results", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
     public static void gradesMenu() {
-        Object[] options2 = {"OK", "CANCEL"};
-        JOptionPane.showOptionDialog(null, testManager.getGrades(), "Grades", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options2, options2[0]);
+        testManager.viewGrades();
     }
 
     public static void logoutMenu() {
@@ -199,6 +277,12 @@ public class Main {
                     logoutMenu();
                     break;
                 case 4:
+                    discussionBoardMenu();
+                    break;
+                case 5:
+                    workshopTalkScheduleMenu();
+                    break;
+                case 6:
                     if (currentUser.isAdmin()) {
                         int manageResult = manageInfoMenu();
                         while (manageResult != 3) {
@@ -225,6 +309,11 @@ public class Main {
                         }
                     }
                     break;
+                case 7:
+                    if(currentUser.isAdmin()) {
+                        addNewUser();
+                        break;
+                    }
                 case -1:
                     int quit = JOptionPane.showConfirmDialog(null, "Warning: Are you sure you want to close?", "Warning", JOptionPane.YES_NO_OPTION);
                     if (quit == JOptionPane.YES_OPTION) {
@@ -236,6 +325,116 @@ public class Main {
         }
     }
 
+    public static void viewPosts() {
+        ArrayList<String> posts = DiscussionBoard.getPosts();
+        StringBuilder formattedPosts = new StringBuilder();
+        for (String post : posts) {
+            formattedPosts.append(post).append("\n\n");
+        }
+
+        if (formattedPosts.length() > 0) {
+            JOptionPane.showMessageDialog(null, formattedPosts.toString(), "Discussion Board Posts", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "No posts available.", "Discussion Board", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    public static void addPost() {
+        String post;
+        do {
+            post = JOptionPane.showInputDialog("Enter your post:");
+            if (post == null) {
+                int quit = JOptionPane.showConfirmDialog(null, "Warning: Are you sure you want to go back to the main menu?", "Warning", JOptionPane.YES_NO_OPTION);
+                if (quit == JOptionPane.YES_OPTION) {
+                    return;
+                }
+            }
+        } while (post == null);
+
+        if (post != null && !post.trim().isEmpty()) {
+            DiscussionBoard.addPost(currentUser.getUsername() + ": " + post);
+            JOptionPane.showMessageDialog(null, "Post added.");
+        }
+    }
+
+    public static void discussionBoardMenu() { // Added
+        String[] options = {"View Posts", "Add Post", "Back to Main Menu"};
+        int result;
+        do {
+            result = JOptionPane.showOptionDialog(null, "Discussion Board:", "Menu", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+            switch (result) {
+                case 0:
+                    viewPosts();
+                    break;
+                case 1:
+                    addPost();
+                    break;
+                case 2:
+                    return;
+                case(JOptionPane.CLOSED_OPTION):
+                    int quit = JOptionPane.showConfirmDialog(null, "Warning: Are you sure you want to go back to the main menu?", "Warning", JOptionPane.YES_NO_OPTION);
+                    if (quit == JOptionPane.YES_OPTION) {
+                        return;
+                    }
+
+
+            }
+        } while (result != 2);
+    }
+    public static void viewSchedule() { // Added
+        ArrayList<WorkshopTalkSchedule.Event> events = WorkshopTalkSchedule.getEvents();
+        StringBuilder formattedSchedule = new StringBuilder();
+        for (WorkshopTalkSchedule.Event event : events) {
+            formattedSchedule.append(event.getName()).append("\n");
+        }
+        JOptionPane.showMessageDialog(null, "Workshop/Talk Schedule:\n\n" + formattedSchedule.toString());
+    }
+
+    public static void registerForWorkshopTalk() { // Modified
+        ArrayList<WorkshopTalkSchedule.Event> events = WorkshopTalkSchedule.getEvents();
+        String[] eventNames = new String[events.size()];
+        for (int i = 0; i < events.size(); i++) {
+            eventNames[i] = events.get(i).getName();
+        }
+
+        String eventName = (String) JOptionPane.showInputDialog(
+                null,
+                "Select a workshop/talk to register for:",
+                "Register for Workshop/Talk",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                eventNames,
+                eventNames[0]);
+
+        if (eventName != null) {
+            boolean success = WorkshopTalkSchedule.register(currentUser.getUsername(), eventName);
+            if (success) {
+                JOptionPane.showMessageDialog(null, "Successfully registered for " + eventName);
+            } else {
+                JOptionPane.showMessageDialog(null, "Failed to register for " + eventName + ". Make sure the event exists.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No event selected.");
+        }
+    }
+
+    public static void workshopTalkScheduleMenu() { // Added
+        String[] options = {"View Schedule", "Register for Workshop/Talk", "Back to Main Menu"};
+        int result;
+        do {
+            result = JOptionPane.showOptionDialog(null, "Workshop/Talk Schedule:", "Menu", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+            switch (result) {
+                case 0:
+                    viewSchedule();
+                    break;
+                case 1:
+                    registerForWorkshopTalk();
+                    break;
+                case 2:
+                    return;
+            }
+        } while (result != 2);
+    }
     public static void main(String[] args) {
         String[] login = login();
         currentUser = getUserByUsername(login[0]); // Added
@@ -251,4 +450,6 @@ public class Main {
         return null;
     }
 }
+
+
 

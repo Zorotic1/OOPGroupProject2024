@@ -3,9 +3,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class testManager {
-    private ArrayList<String> questions;
+    private static ArrayList<String> questions;
     private ArrayList<String> answers;
-    private int correctAnswers;
+    private static int correctAnswers;
+
 
     public testManager() {
         questions = new ArrayList<>();
@@ -48,14 +49,18 @@ public class testManager {
             String userAnswer;
             do {
                 userAnswer = JOptionPane.showInputDialog(questions.get(i));
+
                 if (userAnswer == null) {
                     int quit = JOptionPane.showConfirmDialog(null, "Warning: Are you sure you want to go back to the main menu?", "Warning", JOptionPane.YES_NO_OPTION);
                     if (quit == JOptionPane.YES_OPTION) {
                         return 1;
                     }
-                    break;
                 }
-            } while (userAnswer.isEmpty());
+            } while (userAnswer == null);
+
+            while (userAnswer.isEmpty()) {
+                userAnswer = JOptionPane.showInputDialog(questions.get(i));
+            }
 
             if (userAnswer.equalsIgnoreCase(answers.get(i))) {
                 correctAnswers++;
@@ -65,10 +70,22 @@ public class testManager {
                 JOptionPane.showMessageDialog(null, "Incorrect. The correct answer is: " + answers.get(i));
             }
         }
+        getGradesInfo();
+        User.storeGrades();
         return 0;
     }
 
-    public String getGrades() { // Added
+    public static String getGradesInfo() { // Added
         return correctAnswers + " out of " + questions.size() + " correct.";
+    }
+    public void viewGrades() {
+        ArrayList<String> grades = User.returnGradeslist();
+        StringBuilder formattedGrades = new StringBuilder();
+
+        for (String grade : grades) {
+            formattedGrades.append(grade).append("\n");
+        }
+
+        JOptionPane.showMessageDialog(null, "Grades per test, from oldest result to newest:\n\n" + formattedGrades.toString());
     }
 }
