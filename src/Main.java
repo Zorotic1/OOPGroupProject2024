@@ -423,7 +423,7 @@ public class Main {
     }
 
     public static void workshopTalkScheduleMenu() { // Added
-        String[] options = {"View Schedule", "Register for Workshop/Talk","Add Event", "Remove Event", "Back to Main Menu"};
+        String[] options = currentUser.isAdmin() ? new String[]{"View Schedule", "Register for Workshop/Talk","Add Event", "Remove Event", "Back to Main Menu"} : new String[]{"View Schedule", "Register for Workshop/Talk", "Back to Main Menu"};;
         int result;
         do {
             result = JOptionPane.showOptionDialog(null, "Workshop/Talk Schedule:", "Menu", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
@@ -437,6 +437,9 @@ public class Main {
                 case 2:
                     if (currentUser.isAdmin()) {
                         addEvent();
+                    }
+                    else{
+                        return;
                     }
                     break;
                 case 3:
