@@ -6,7 +6,6 @@ public class Main {
 
     private static ArrayList<User> users = new ArrayList<>(); // Added
     private static User currentUser; // Added
-    private static User user;
     private static testManager testManager = new testManager();
     private static ArrayList<String> infoPages = new ArrayList<>(Arrays.asList(
             "<html><div style='width: 1000px;'>Climate change refers to significant and lasting changes in the Earth’s climate and weather patterns. These changes can be natural, but in the context of recent discussions, the term often refers to changes driven by human activities, particularly the increase in greenhouse gases (like carbon dioxide and methane) due to burning fossil fuels, deforestation, and other industrial processes. Key aspects of climate change include:<br><br>"
@@ -357,8 +356,8 @@ public class Main {
         }
     }
 
-    public static void discussionBoardMenu() { // Added
-        String[] options = {"View Posts", "Add Post", "Back to Main Menu"};
+    public static void discussionBoardMenu() {
+        String[] options = currentUser.isAdmin() ? new String[]{"View Posts", "Add Post", "Remove Post", "Back to Main Menu"} : new String[]{"View Posts", "Add Post", "Back to Main Menu"};
         int result;
         do {
             result = JOptionPane.showOptionDialog(null, "Discussion Board:", "Menu", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
@@ -370,16 +369,21 @@ public class Main {
                     addPost();
                     break;
                 case 2:
+                    if (currentUser.isAdmin()) {
+                        removePost();
+                    } else {
+                        return;
+                    }
+                    break;
+                case 3:
                     return;
-                case(JOptionPane.CLOSED_OPTION):
+                case (JOptionPane.CLOSED_OPTION):
                     int quit = JOptionPane.showConfirmDialog(null, "Warning: Are you sure you want to go back to the main menu?", "Warning", JOptionPane.YES_NO_OPTION);
                     if (quit == JOptionPane.YES_OPTION) {
                         return;
                     }
-
-
             }
-        } while (result != 2);
+        } while (result != 3);
     }
     public static void viewSchedule() { // Added
         ArrayList<WorkshopTalkSchedule.Event> events = WorkshopTalkSchedule.getEvents();
@@ -419,7 +423,7 @@ public class Main {
     }
 
     public static void workshopTalkScheduleMenu() { // Added
-        String[] options = {"View Schedule", "Register for Workshop/Talk", "Back to Main Menu"};
+        String[] options = {"View Schedule", "Register for Workshop/Talk","Add Event", "Remove Event", "Back to Main Menu"};
         int result;
         do {
             result = JOptionPane.showOptionDialog(null, "Workshop/Talk Schedule:", "Menu", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
@@ -431,10 +435,87 @@ public class Main {
                     registerForWorkshopTalk();
                     break;
                 case 2:
+                    if (currentUser.isAdmin()) {
+                        addEvent();
+                    }
+                    break;
+                case 3:
+                    if (currentUser.isAdmin()) {
+                        removeEvent();
+                    }
+                    break;
+                case 4:
                     return;
             }
-        } while (result != 2);
+        } while (result != 4);
     }
+
+    public static void addEvent() {
+        String eventName = JOptionPane.showInputDialog("Enter the name of the new event:");
+        if (eventName != null && !eventName.trim().isEmpty()) {
+            boolean success = WorkshopTalkSchedule.addEvent(eventName);
+            if (success) {
+                JOptionPane.showMessageDialog(null, "Event added successfully.");
+            } else {
+                JOptionPane.showMessageDialog(null, "Event already exists.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Event name cannot be empty.");
+        }
+    }
+
+    // Add this method to the main class
+    public static void removeEvent() {
+        ArrayList<WorkshopTalkSchedule.Event> events = WorkshopTalkSchedule.getEvents();
+        String[] eventNames = new String[events.size()];
+        for (int i = 0; i < events.size(); i++) {
+            eventNames[i] = events.get(i).getName();
+        }
+
+        String eventName = (String) JOptionPane.showInputDialog(
+                null,
+                "Select an event to remove:",
+                "Remove Event",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                eventNames,
+                eventNames[0]);
+
+        if (eventName != null) {
+            boolean success = WorkshopTalkSchedule.removeEvent(eventName);
+            if (success) {
+                JOptionPane.showMessageDialog(null, "Event removed successfully.");
+            } else {
+                JOptionPane.showMessageDialog(null, "Failed to remove event.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No event selected.");
+        }
+    }
+
+
+    public static void removePost() {
+        ArrayList<String> posts = DiscussionBoard.getPosts();
+        if (posts.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No posts available to remove.", "Discussion Board", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        String[] postArray = new String[posts.size()];
+        for (int i = 0; i < posts.size(); i++) {
+            String post = posts.get(i);
+            String buttonText = post.length() > 50 ? post.substring(0, 50) + "..." : post;
+            postArray[i] = buttonText;
+        }
+
+        int index = JOptionPane.showOptionDialog(null, "Select post to remove:", "Remove Post", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, postArray, postArray[0]);
+
+        if (index >= 0 && index < posts.size()) {
+            DiscussionBoard.removePost(index);
+            JOptionPane.showMessageDialog(null, "Post removed.");
+        }
+    }
+
     public static void main(String[] args) {
         String[] login = login();
         currentUser = getUserByUsername(login[0]); // Added

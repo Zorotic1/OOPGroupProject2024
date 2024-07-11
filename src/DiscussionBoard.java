@@ -10,4 +10,9 @@ public class DiscussionBoard { // New file
     public static ArrayList<String> getPosts() {
         return posts;
     }
+    public static void removePost(int index) {
+        if (index >= 0 && index < posts.size()) {
+            posts.remove(index);
+        }
+    }
 }

@@ -2,7 +2,6 @@ import java.util.ArrayList;
 
 public class WorkshopTalkSchedule {
 
-    // Inner class to represent a workshop or talk event
     public static class Event {
         private String name;
         private ArrayList<String> registeredUsers;
@@ -16,10 +15,6 @@ public class WorkshopTalkSchedule {
             return name;
         }
 
-        public ArrayList<String> getRegisteredUsers() {
-            return registeredUsers;
-        }
-
         public void registerUser(String username) {
             registeredUsers.add(username);
         }
@@ -28,7 +23,6 @@ public class WorkshopTalkSchedule {
     private static ArrayList<Event> events = new ArrayList<>();
 
     static {
-        // Adding some sample events
         events.add(new Event("Workshop on Climate Change - July 15, 2024"));
         events.add(new Event("Talk on Renewable Energy - July 20, 2024"));
     }
@@ -46,4 +40,25 @@ public class WorkshopTalkSchedule {
         }
         return false;
     }
+
+    public static boolean addEvent(String eventName) {
+        for (Event event : events) {
+            if (event.getName().equalsIgnoreCase(eventName)) {
+                return false; // Event already exists
+            }
+        }
+        events.add(new Event(eventName));
+        return true;
+    }
+
+    public static boolean removeEvent(String eventName) {
+        for (Event event : events) {
+            if (event.getName().equalsIgnoreCase(eventName)) {
+                events.remove(event);
+                return true; // Event removed successfully
+            }
+        }
+        return false; // Event not found
+    }
 }
+
