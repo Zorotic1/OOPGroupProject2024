@@ -27,9 +27,9 @@ public class Main {
         testManager.addQuestion("Fill in the blank: Energy, industry, transport, buildings, _________, and land use are among the main sectors causing greenhouse gases.", "agriculture");
         testManager.addQuestion("Fill in the blank: The main greenhouse gases that are causing climate change include carbon dioxide and methane. These come from using gasoline for driving a car or _______ for heating a building", "coal");
         testManager.addQuestion("Fill in the blank: Changes in Weather Patterns: More frequent and severe weather events, such as hurricanes, heatwaves, _______, and heavy rainfall.","droughts");
-        testManager.addQuestion("Fill in the blank: To enhance students' understanding and ability to respond to climate change, we can introduce courses on _________ and environmental protection in schools and higher education institutions.","International conferences");
-        testManager.addQuestion("Fill in the blank: To raise public awareness of environmental issues, we can use_______, community activities, and social networks to widely disseminate information on the impacts and measures of climate change","Climate change");
-        testManager.addQuestion("Fill in the blanks: International cooperation and experience sharing are crucial for improving global capacity to respond to climate change. We can achieve this by participating in _______, collaborative projects, and bilateral exchanges.","Media");
+        testManager.addQuestion("Fill in the blank: To enhance students' understanding and ability to respond to climate change, we can introduce courses on _________ and environmental protection in schools and higher education institutions.","Climate Change");
+        testManager.addQuestion("Fill in the blank: To raise public awareness of environmental issues, we can use_______, community activities, and social networks to widely disseminate information on the impacts and measures of climate change","Media");
+        testManager.addQuestion("Fill in the blanks: International cooperation and experience sharing are crucial for improving global capacity to respond to climate change. We can achieve this by participating in _______, collaborative projects, and bilateral exchanges.","International conferences");
     }
 
     public static void populateUsers() { // Added
