@@ -1,4 +1,7 @@
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -133,11 +136,38 @@ public class Main {
     }
 
     public static int mainMenu() {
-        String[] options = currentUser.isAdmin() ? new String[]{ "Log Out", "Grades", "Test Yourself", "Information On Climate Change","Discussion Board","Workshop/Talk Schedule","Manage Information", "Add New User"} :
-                new String[]{ "Log Out", "Grades", "Test Yourself", "Information On Climate Change", "Discussion Board","Workshop/Talk Schedule"};
-        int result = JOptionPane.showOptionDialog(null, "Select an operation:", "Menu", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options);
+        String[] options = currentUser.isAdmin() ? new String[]{"Log Out", "Grades", "Test Yourself", "Information On Climate Change", "Discussion Board", "Workshop/Talk Schedule", "Manage Information", "Add New User"} :
+                new String[]{"Log Out", "Grades", "Test Yourself", "Information On Climate Change", "Discussion Board", "Workshop/Talk Schedule"};
 
-        return result;
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        JButton[] buttons = new JButton[options.length];
+        for (int i = 0; i < options.length; i++) {
+            buttons[i] = new JButton(options[i]);
+            buttons[i].setAlignmentX(Component.CENTER_ALIGNMENT);
+            panel.add(buttons[i]);
+        }
+
+        JOptionPane optionPane = new JOptionPane(panel, JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+        JDialog dialog = optionPane.createDialog("Menu");
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        // Add action listeners to buttons
+        final int[] result = {-1};
+        for (int i = 0; i < buttons.length; i++) {
+            final int optionIndex = i;
+            buttons[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    result[0] = optionIndex;
+                    dialog.dispose();
+                }
+            });
+        }
+
+        dialog.setVisible(true);
+        return result[0];
     }
 
     public static int infoMenu() {
